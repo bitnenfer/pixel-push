@@ -1,0 +1,135 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" hola_ext_inject="disabled"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		
+		<meta property="og:image" content="http://shin.cl/pix/logo.png">
+		<title>PixelPush 2</title>
+		<meta name="author" content="Felipe Alfonso">
+		<script type="text/javascript" src="./js/FileSaver.min.js"></script>
+		<script type="text/javascript" src="./js/canvas-toBlob.js"></script>
+		<script type="text/javascript" src="./js/tools.js"></script>
+		<script type="text/javascript" src="./js/bitmap.js"></script>
+		<script type="text/javascript" src="./js/utils.js"></script>
+		<script type="text/javascript" src="./js/layers.js"></script>
+		<script type="text/javascript" src="./js/colorpicker.js"></script>
+		<!-- Not implemented <script type="text/javascript" src="pp/frames.js"></script> -->
+		
+		<!-- Check if it's chrome browser -->
+		<script type="text/javascript">
+			if(checkBrowser()!="chrome")
+			{
+				alert("This might not work properly without Google Chrome.");
+			}
+		</script>
+		<link href="./js/style.css" type="text/css" rel="stylesheet">
+	</head>
+	<body>
+		<div id="header">
+		<div class="button" onclick="$.newFile()">New File</div>
+		<div class="button1" onclick="$.downloadImage()">Save to Desktop</div>
+		<div class="button1" onclick="$.saveToLocal()">Save Local</div>
+		<div class="button1" onclick="$.loadFromLocal()">Load Local</div>
+		<div class="button1" id="previewPopBtn" onclick="$.showPreviewPop()">Show Preview</div>
+		<div style=" cursor:pointer; float: right; width:20px; " onclick="$.showPopup();">?</div>
+		</div>
+		<div align="center" id="output" style="margin-top: 20px;"></div>
+		
+		
+		<div id="content" align="center" style="visibility: visible;">
+			<div id="canvas_wrap">
+				<canvas id="canvas" onclick="this.focus();" oncontextmenu="return false;" width="250" height="250" style="margin-top: -125px; margin-left: -125px;"> 
+				</canvas>
+				
+			</div>
+			
+			<div id="colorPickWrap">
+				<div id="colorTop">
+					      Color Palette
+					<div id="hide1" style="float:right; width:20px;height: 20px;" onclick="$.hideColor()">[-]</div>
+				</div>
+					<div>
+						<canvas id="colorPick" style="position: inherit;" width="250" height="50">
+						</canvas>
+					</div>
+					<div>
+						<canvas id="colorTone" style="position: inherit;" width="250" height="50">
+						</canvas>
+					</div>
+					<!-- No Alpha yet -->
+					<!--<div>
+						<canvas id="colorAlpha" style="position: inherit;" width="250" height="50">
+						</canvas>
+					</div>-->
+					<div id="currentColor">
+					</div>
+					<div id="colorName">
+						R: 0 | G: 0 | B: 0
+					</div>
+	
+			</div>
+			
+			<div id="imgWrap" style="width: 125px; height: 125px; visibility: hidden;">
+				<div id="imgTop">
+					      Preview
+					<div id="hide" style="float:right; width:20px;height: 20px;" onclick="$.hidePreview()">[-]</div>
+				</div>
+				<canvas id="prev" width="125" height="125">
+				</canvas>
+				
+			</div>
+			
+			<div id="layerWrap">
+				<div id="layerTop">
+					      Layers
+					<div id="hide2" style="float:right; width:20px;height: 20px;" onclick="$.hideLayers()">[-]</div>
+				</div>
+				<div id="buttons" style="margin-left:2px;width:276px;text-align: center;">
+					<div class="button" onclick="$.addLayer()">add</div>
+					<div class="button" onclick="$.removeLayer()">delete</div>
+					<div class="button" onclick="$.moveLayerUp()">up</div>
+					<div class="button" onclick="$.moveLayerDown()">down</div>
+					<div class="button" onclick="$.clearCurrentLayer()">clear</div>
+				</div>
+				<div id="layers"><div class="layerSelected"><div id="layerName-0" class="layerNameSelect" onblur="$.saveLayerName(0,this)" onclick="$.editLayerName(0,this);">Layer 0</div>Visible <input type="checkbox" checked="true" onclick="$.activateLayer(0,this)"><br>Alpha: <input type="range" min="0" max="100" value="100" size="3" onchange="$.updateAlpha(0,this)"></div></div>
+			</div>
+			
+			<div id="toolsWrap">
+				<div id="toolsTop">
+					  Tools
+					<div id="hide3" style="float:right; width:20px;height: 20px;" onclick="$.hideTools()">[-]</div>
+				</div>
+				
+				<div id="toolsBtnWrap">
+					<div class="toolButtonSel" title="pencil | B" onclick="$.setToolType(0);" id="pencil"> </div>
+					<div class="toolButton" title="eraser | E" onclick="$.setToolType(1);" id="eraser"> </div>
+					<div class="toolButton" title="fill | G" onclick="$.setToolType(2);" id="fill"> </div>
+					<div class="toolButton" title="clear fill | C" onclick="$.setToolType(3);" id="clearfill"> </div>
+					<div class="toolButton" title="color pick | I" onclick="$.setToolType(6);" id="colorp"> </div>
+					<div class="toolButton" title="draw rectangle | R" onclick="$.setToolType(4);" id="rectangle"> </div>
+					<div class="toolButton" title="draw line | L" onclick="$.setToolType(5);" id="line"> </div>
+				</div>
+			</div>
+			
+		</div>
+		<!-- no frames yet
+		<div id="framesWrap">
+			<div id="framesTop">
+				&ensp; Frames
+				<div id="hide4" style="float:right; width:20px;height: 20px;" onclick="">[-]</div>
+			</div>
+		</div>
+	-->
+		
+		<div id="popup">
+			<b>PixelPush 2</b><br>
+			<br>A tool made by a pixel artist for pixel artists.
+			<br>
+			Developed by Felipe Alfonso<br>
+			(c) Copyright 2012 Felipe Alfonso. All Rights Reserved.<br>
+			<a href="http://shin.cl/" target="_blank">Visit my website.</a>
+			<br><br><u><a onclick="$.openAbout()">ABOUT | THINGS TO KNOW</a></u>
+		</div>
+		<script type="text/javascript" src="./index_files/core.js"></script>
+	
+
+
+</body></html>
